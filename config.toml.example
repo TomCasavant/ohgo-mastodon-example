@@ -1,0 +1,6 @@
+[ohgo]
+api_key = "YOUR-API-KEY"
+
+[mastodon]
+api_base_url = "https://mastodon.social"
+access_token = "YOUR-ACCESS-TOKEN"
