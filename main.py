@@ -6,6 +6,8 @@ from ohgo.models.camera import Camera
 import os
 import pickle
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 def get_camera_cache(image_cache_file="camera_cache.pickle"):
     # If camera_cache_file is not None and exists, load it
     if image_cache_file is not None:
