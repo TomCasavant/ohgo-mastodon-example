@@ -64,23 +64,26 @@ class OHGOBot:
     def post_random_images(self):
         camera = self.get_random_camera()
         images = self.ohgo_client.get_images(camera, size="large") # List of PIL images
+        print(camera)
         # Upload all images to Mastodon
         media_ids = []
         for image in images:
-            # Save image to file and upload to Mastodon
-            with open("temp.jpg", "wb") as f:
-                image.save(f, format="JPEG")
-            media = self.mastodon.media_post("temp.jpg", mime_type="image/jpeg")
-            media_ids.append(media['id'])
+            if image:
+                # Save image to file and upload to Mastodon
+                with open("temp.jpg", "wb") as f:
+                    image.save(f, format="JPEG")
+                media = self.mastodon.media_post("temp.jpg", mime_type="image/jpeg", description="Typically shows a road or highway in Ohio with or without vehicles from a traffic camera.")
+                media_ids.append(media['id'])
 
-        # Get all views
-        camera_views = "\n".join([ f"[View {index+1}]({view.large_url})" for index, view in enumerate(camera.camera_views)])
-        
-        # Post to Mastodon
-        status = f"OHGO Traffic Camera: {camera.description}\n\n"
-        status += f"Views:\n{camera_views}\n\n"
-        status += f"Lat/Lng: [{camera.latitude}, {camera.longitude}](https://www.openstreetmap.org/?mlat={camera.latitude}&mlon={camera.longitude})"
-        self.mastodon.status_post(status, media_ids=media_ids)
+        if len(media_ids) > 0:
+            # Get all views
+            camera_views = "\n".join([ f"[View {index+1}]({view.large_url})" for index, view in enumerate(camera.camera_views)])
+            
+            # Post to Mastodon
+            status = f"OHGO Traffic Camera: {camera.description}\n\n"
+            status += f"Views:\n{camera_views}\n\n"
+            status += f"Lat/Lng: [{camera.latitude}, {camera.longitude}](https://www.openstreetmap.org/?mlat={camera.latitude}&mlon={camera.longitude})"
+            self.mastodon.status_post(status, media_ids=media_ids)
 
 if __name__ == "__main__":
     bot = OHGOBot()
