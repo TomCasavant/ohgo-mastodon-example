@@ -1,8 +1,8 @@
 from mastodon import Mastodon
-from ohgo.ohgo_client import OHGOClient
+from ohgo import OHGOClient
 import toml
 import random
-from ohgo.models.camera import Camera
+from ohgo.models import Camera, QueryParams
 import os
 import pickle
 
@@ -57,6 +57,7 @@ class OHGOBot:
         if self._camera_cache is not None:
             cameras = self._camera_cache
         else:
+            params = QueryParams(page_all=True)
             cameras = self.ohgo_client.get_cameras()
             self.save_camera_cache(cameras)
         return random.choice(cameras)
